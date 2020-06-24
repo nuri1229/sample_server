@@ -2,45 +2,16 @@ const express = require("express");
 const app = express();
 const port = 8000;
 
+app.use(express.json());
 var fs = require('fs');
 
 app.get("/", (req, res) => res.send("Hello World!"));
 
 app.get("/boards", (req, res) => {
 
-  const data = fs.readFileSync("./dummy.json", "utf8");
-  console.log("data", JSON.parse(data));
+  const data = fs.readFileSync("./board.json", "utf8");
 
-  const board = {
-    results: [
-      {
-        key: "board1",
-        title: "제목1",
-        contents: "내용1",
-        user: "user1",
-      },
-      {
-        key: "board2",
-        title: "제목2",
-        contents: "내용2",
-        user: "2",
-      },
-      {
-        key: "board3",
-        title: "제목3",
-        contents: "내용3",
-        user: "3",
-      },
-      {
-        key: "board4",
-        title: "제목4",
-        contents: "내용4",
-        user: "3",
-      },
-    ],
-  };
-
-  return res.json(board);
+  return res.json(JSON.parse(data));
 });
 
 app.get("/users", (req, res) => {
@@ -88,6 +59,16 @@ app.get("/levels", (req, res) => {
   return res.send(level);
 });
 
-app.listen(port, () =>
+app.post("/boards", (req, res) => {
+  console.log("boards_post", req.body);
+  const data = JSON.parse(fs.readFileSync("./board.json", "utf8"));
+  const newData = [...data.results, req.body];
+
+  fs.writeFileSync('./board.json', JSON.stringify(newData));
+  res.json({});
+
+})
+
+app.listen(port, (req, res) =>
   console.log(`Example app listening at http://localhost:${port}`)
 );
