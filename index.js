@@ -1,5 +1,5 @@
 const express = require("express");
-const cors = require('cors');
+const cors = require("cors");
 const app = express();
 const port = 8000;
 
@@ -8,12 +8,12 @@ app.use(express.json());
 // CORS 설정
 app.use(cors());
 
-var fs = require('fs');
+var fs = require("fs");
 
+console.log("Test");
 app.get("/", (req, res) => res.send("Hello World!"));
 
 app.get("/boards", (req, res) => {
-
   const data = fs.readFileSync("./board.json", "utf8");
   return res.json(JSON.parse(data));
 });
@@ -68,10 +68,9 @@ app.post("/boards", (req, res) => {
   const data = JSON.parse(fs.readFileSync("./board.json", "utf8"));
   const newData = [...data.results, req.body];
 
-  fs.writeFileSync('./board.json', JSON.stringify(newData));
-  res.json({result: "SUCCESS"});
-
-})
+  fs.writeFileSync("./board.json", JSON.stringify(newData));
+  res.json({ result: "SUCCESS" });
+});
 
 app.listen(port, (req, res) =>
   console.log(`Example app listening at http://localhost:${port}`)
@@ -80,20 +79,18 @@ app.listen(port, (req, res) =>
 app.delete("/boards", (req, res) => {
   console.log("boards_post", req.body);
   const data = JSON.parse(fs.readFileSync("./board.json", "utf8"));
-  const newData = data.filter(data => data.key !== req.body.key);
-  fs.writeFileSync('./board.json', JSON.stringify(newData));
-  res.json({result: "SUCCESS"});
-
+  const newData = data.filter((data) => data.key !== req.body.key);
+  fs.writeFileSync("./board.json", JSON.stringify(newData));
+  res.json({ result: "SUCCESS" });
 });
 
 app.patch("/boards", (req, res) => {
   console.log("boards_post", req.body);
   const data = JSON.parse(fs.readFileSync("./board.json", "utf8"));
-  const newData = data.map(d => {
+  const newData = data.map((d) => {
     if (d.key === req.body.key) return req.body;
     else return d;
-  })
-  fs.writeFileSync('./board.json', JSON.stringify(newData));
-  res.json({result: "SUCCESS"});
-
-})
+  });
+  fs.writeFileSync("./board.json", JSON.stringify(newData));
+  res.json({ result: "SUCCESS" });
+});
